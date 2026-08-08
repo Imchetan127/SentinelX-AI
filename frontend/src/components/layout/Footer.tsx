@@ -23,6 +23,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       description:
         'Contributed to system development, feature implementation, testing, and collaborative engineering throughout the project.',
       initials: 'HD',
+      image: '/images/team/h_deepak.png',
       github: 'https://github.com',
       linkedin: 'https://linkedin.com',
       isFaculty: false,
