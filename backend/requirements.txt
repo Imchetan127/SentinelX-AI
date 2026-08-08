@@ -10,6 +10,7 @@ xgboost>=1.7.6
 lightgbm>=4.0.0
 python-multipart>=0.0.6
 passlib[bcrypt]>=1.7.4
+bcrypt==4.0.1
 sqlalchemy>=2.0.0
 alembic>=1.11.0
 psycopg2-binary>=2.9.0

@@ -32,16 +32,32 @@ def register(user: UserRegister, request: Request, db: Session = Depends(get_db)
         log_auth_event(username, client_ip, "registration", "failed", "Username format is invalid")
         raise _error_response(status.HTTP_400_BAD_REQUEST, "Username format is invalid")
 
+    ALLOWED_ROLES = {"user", "analyst", "admin", "security_analyst"}
+    raw_role = (user.role or "user").strip().lower()
+    if raw_role not in ALLOWED_ROLES:
+        log_auth_event(username, client_ip, "registration", "failed", f"Invalid role requested: {user.role}")
+        raise _error_response(
+            status.HTTP_400_BAD_REQUEST,
+            f"Invalid role '{user.role}'. Allowed roles are: user, analyst, admin"
+        )
+    requested_role = raw_role
+
     user_service = UserService(db)
     audit_service = AuditService(db)
 
     try:
-        new_user = user_service.register_user(username=username, email=str(user.email), password=user.password)
+        new_user = user_service.register_user(
+            username=username,
+            email=str(user.email),
+            password=user.password,
+            role=requested_role,
+        )
     except HTTPException as exc:
-        log_auth_event(username, client_ip, "registration", "failed", exc.detail)
+        log_auth_event(username, client_ip, "registration", "failed", str(exc.detail))
         raise exc
 
     token = create_access_token(user_id=str(new_user.id), username=new_user.username, role=new_user.role)
+
     audit_service.log_action(
         user_id=new_user.id,
         action="registration",

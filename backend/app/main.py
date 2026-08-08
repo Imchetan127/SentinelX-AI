@@ -72,8 +72,15 @@ app.include_router(explainability, prefix="/api/v1")
 
 @app.on_event("startup")
 def run_governance_startup_checks():
-    from app.database.session import SessionLocal
+    from app.database.base import Base
+    from app.database.session import SessionLocal, engine
     from app.services.model_governance_service import ModelGovernanceService
+
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print(f"Table creation warning: {str(e)}")
+
     db = SessionLocal()
     try:
         gov_service = ModelGovernanceService(db)
@@ -82,6 +89,7 @@ def run_governance_startup_checks():
         print(f"Startup governance diagnostics warning: {str(e)}")
     finally:
         db.close()
+
 
 
 @app.get("/")

@@ -75,10 +75,20 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="flex items-center space-x-3 font-mono text-xs">
         {user ? (
           <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300">
+            <div className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-200">
               <User className="w-4 h-4 text-cyan-400" />
-              <span className="font-bold text-sm">{user.username}</span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-bold uppercase">{user.role}</span>
+              <span className="font-bold text-sm tracking-wide text-white">{user.username}</span>
+              <span
+                className={`text-[10px] px-2.5 py-0.5 rounded-md uppercase tracking-wider ${
+                  (user.role || 'USER').toUpperCase() === 'ADMIN'
+                    ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                    : (user.role || 'USER').toUpperCase().includes('ANALYST')
+                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                    : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                }`}
+              >
+                {(user.role || 'USER').toUpperCase()}
+              </span>
             </div>
             <button
               onClick={onLogout}
@@ -89,6 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           </div>
         ) : (
+
           <button
             onClick={onOpenLogin}
             className="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-xs font-mono transition-all glow-blue"
