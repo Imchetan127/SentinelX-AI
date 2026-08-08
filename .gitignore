@@ -1,0 +1,36 @@
+# Node
+node_modules/
+frontend/node_modules/
+
+# Next.js
+.next/
+frontend/.next/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment
+.env
+
+# macOS
+.DS_Store# Node
+node_modules/
+frontend/node_modules/
+
+# Next.js
+.next/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment
+.env
+
+# macOS
+.DS_Store
