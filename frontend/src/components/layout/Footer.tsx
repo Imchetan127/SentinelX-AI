@@ -1,12 +1,12 @@
 import React from 'react';
-import { Shield, Github, Linkedin, ExternalLink, Code2, Award, BookOpen, Layers } from 'lucide-react';
+import { Shield, Github, Linkedin, ExternalLink, Award, BookOpen, GraduationCap } from 'lucide-react';
 
 interface FooterProps {
   onNavigate?: (tab: string) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
-  const teamMembers = [
+  const studentDevelopers = [
     {
       name: 'Chetan B K',
       role: 'Project Lead & Full Stack AI Developer',
@@ -16,7 +16,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       image: '/images/team/chetan_bk.jpg',
       github: 'https://github.com/Imchetan127',
       linkedin: 'https://linkedin.com',
-      isFaculty: false,
     },
     {
       name: 'H Deepak',
@@ -27,7 +26,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       image: '/images/team/h_deepak.png',
       github: 'https://github.com',
       linkedin: 'https://linkedin.com',
-      isFaculty: false,
     },
     {
       name: 'Nivas M R',
@@ -38,7 +36,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       image: '/images/team/nivas_mr.jpg',
       github: 'https://github.com',
       linkedin: 'https://linkedin.com',
-      isFaculty: false,
     },
     {
       name: 'Kiran D',
@@ -49,19 +46,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       image: '/images/team/kiran_d.png',
       github: 'https://github.com',
       linkedin: 'https://linkedin.com',
-      isFaculty: false,
-    },
-    {
-      name: 'Sneha Karamadi',
-      role: 'Assistant Professor',
-      department: 'Dept. of Artificial Intelligence & Data Science',
-      institution: 'K.S. School of Engineering and Management',
-      description:
-        'Provided academic guidance, technical mentorship, project reviews, and continuous support throughout the development of SentinelX AI.',
-      initials: 'SK',
-      isFaculty: true,
     },
   ];
+
+  const academicMentor = {
+    name: 'Sneha Karamadi',
+    role: 'Assistant Professor',
+    department: 'Department of Artificial Intelligence & Data Science',
+    institution: 'K.S. School of Engineering & Management',
+    description:
+      'Provided academic mentorship, technical guidance, project reviews, and continuous support throughout the design and development of SentinelX AI.',
+    initials: 'SK',
+  };
 
   return (
     <footer className="mt-20 border-t border-white/[0.08] bg-[#090B10] text-slate-300 font-sans">
@@ -70,34 +66,21 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="text-center space-y-3 max-w-3xl mx-auto">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#00D4FF]/10 border border-[#00D4FF]/20 text-[#00D4FF] text-xs font-mono">
             <Award className="w-3.5 h-3.5 text-[#00D4FF]" />
-            <span>PROJECT CREATORS & ACADEMIC MENTORSHIP</span>
+            <span>ENGINEERING DEVELOPMENT TEAM & ACADEMIC ADVISORY</span>
           </div>
           <h2 className="text-3xl font-extrabold text-white tracking-tight">Meet the Development Team</h2>
           <p className="text-xs text-slate-400 font-mono leading-relaxed">
-            Engineered collaboratively for final year engineering synthesis at K.S. School of Engineering and Management (Dept. of AI & Data Science).
+            Engineered collaboratively for final year engineering synthesis at K.S. School of Engineering & Management.
           </p>
         </div>
 
-        {/* 5 Profile Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-          {teamMembers.map((member, idx) => (
+        {/* Row 1: Student Developers Grid (4 Centered Cards) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {studentDevelopers.map((member, idx) => (
             <div
               key={idx}
-              className={`p-6 rounded-2xl border flex flex-col justify-between space-y-4 transition-all duration-200 relative overflow-hidden ${
-                member.isFaculty
-                  ? 'bg-[#161B22]/90 border-amber-500/40 shadow-lg ring-1 ring-amber-500/20'
-                  : 'bg-[#161B22]/70 border-white/[0.08] hover:border-white/[0.18]'
-              }`}
+              className="p-6 rounded-2xl bg-[#161B22]/70 border border-white/[0.08] hover:border-white/[0.18] flex flex-col justify-between space-y-4 transition-all duration-200"
             >
-              {/* Faculty Ribbon Banner */}
-              {member.isFaculty && (
-                <div className="absolute top-0 right-0">
-                  <span className="px-3 py-1 bg-amber-500/20 text-amber-300 border-b border-l border-amber-500/30 text-[10px] font-mono font-bold tracking-wider uppercase rounded-bl-xl block">
-                    FACULTY GUIDE
-                  </span>
-                </div>
-              )}
-
               <div className="space-y-4">
                 {/* Avatar / Profile Photo */}
                 <div className="flex items-center space-x-3">
@@ -108,69 +91,83 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                       className="w-12 h-12 rounded-full object-cover border border-[#00D4FF]/40 shadow-sm flex-shrink-0"
                     />
                   ) : (
-                    <div
-                      className={`w-12 h-12 rounded-full flex items-center justify-center font-mono font-bold text-sm border flex-shrink-0 ${
-                        member.isFaculty
-                          ? 'bg-amber-500/10 text-amber-300 border-amber-500/40'
-                          : 'bg-[#00D4FF]/10 text-[#00D4FF] border-[#00D4FF]/30'
-                      }`}
-                    >
+                    <div className="w-12 h-12 rounded-full bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/30 flex items-center justify-center font-mono font-bold text-sm flex-shrink-0">
                       {member.initials}
                     </div>
                   )}
                   <div>
                     <h3 className="text-base font-bold text-white tracking-tight">{member.name}</h3>
-                    <p
-                      className={`text-[11px] font-mono font-semibold ${
-                        member.isFaculty ? 'text-amber-300' : 'text-[#00D4FF]'
-                      }`}
-                    >
+                    <p className="text-[11px] font-mono font-semibold text-[#00D4FF]">
                       {member.role}
                     </p>
                   </div>
                 </div>
-
-                {/* Additional Institution Details for Faculty */}
-                {member.isFaculty && (
-                  <div className="text-[11px] font-mono text-slate-400 space-y-0.5 border-l-2 border-amber-500/40 pl-2 py-0.5">
-                    <p className="text-slate-300 font-semibold">{member.department}</p>
-                    <p className="text-slate-400">{member.institution}</p>
-                  </div>
-                )}
 
                 {/* Professional Description */}
                 <p className="text-xs text-slate-400 leading-relaxed font-sans">{member.description}</p>
               </div>
 
               {/* Student Links */}
-              {!member.isFaculty && (member.github || member.linkedin) && (
-                <div className="pt-3 border-t border-white/[0.06] flex items-center space-x-3 text-slate-400">
-                  {member.github && (
-                    <a
-                      href={member.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-white transition-colors"
-                      title="GitHub Profile"
-                    >
-                      <Github className="w-4 h-4" />
-                    </a>
-                  )}
-                  {member.linkedin && (
-                    <a
-                      href={member.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-[#00D4FF] transition-colors"
-                      title="LinkedIn Profile"
-                    >
-                      <Linkedin className="w-4 h-4" />
-                    </a>
-                  )}
-                </div>
-              )}
+              <div className="pt-3 border-t border-white/[0.06] flex items-center space-x-3 text-slate-400">
+                {member.github && (
+                  <a
+                    href={member.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white transition-colors"
+                    title="GitHub Profile"
+                  >
+                    <Github className="w-4 h-4" />
+                  </a>
+                )}
+                {member.linkedin && (
+                  <a
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-[#00D4FF] transition-colors"
+                    title="LinkedIn Profile"
+                  >
+                    <Linkedin className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* Subtle Divider between Development Team & Academic Mentor */}
+        <div className="flex items-center justify-center py-2">
+          <div className="h-[1px] bg-gradient-to-r from-transparent via-white/[0.12] to-transparent w-full max-w-xl" />
+        </div>
+
+        {/* Row 2: Centered Prestigious Academic Mentor Section */}
+        <div className="flex justify-center">
+          <div className="w-full max-w-2xl p-7 rounded-2xl bg-[#161B22]/90 border border-amber-500/40 shadow-xl ring-1 ring-amber-500/20 relative overflow-hidden space-y-4">
+            {/* Academic Mentor Badge Banner */}
+            <div className="absolute top-0 right-0">
+              <span className="px-3.5 py-1 bg-amber-500/20 text-amber-300 border-b border-l border-amber-500/30 text-[10px] font-mono font-bold tracking-wider uppercase rounded-bl-xl flex items-center space-x-1">
+                <GraduationCap className="w-3 h-3 text-amber-400" />
+                <span>ACADEMIC MENTOR</span>
+              </span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 border-b border-white/[0.08] pb-4">
+              <div className="w-14 h-14 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/40 flex items-center justify-center font-mono font-bold text-lg flex-shrink-0 shadow-sm">
+                {academicMentor.initials}
+              </div>
+              <div className="space-y-0.5">
+                <h3 className="text-xl font-bold text-white tracking-tight">{academicMentor.name}</h3>
+                <p className="text-xs font-mono font-bold text-amber-300">{academicMentor.role}</p>
+                <p className="text-xs font-mono text-slate-300">{academicMentor.department}</p>
+                <p className="text-xs font-mono text-slate-400">{academicMentor.institution}</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed font-sans pt-1">
+              {academicMentor.description}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -296,7 +293,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <div className="pt-6 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between font-mono text-xs text-slate-500 gap-4">
             <p>Copyright © 2026 SentinelX AI. All rights reserved.</p>
             <p className="text-[11px]">
-              Dept. of Artificial Intelligence & Data Science • K.S. School of Engineering and Management
+              Department of Artificial Intelligence & Data Science • K.S. School of Engineering & Management
             </p>
           </div>
         </div>
