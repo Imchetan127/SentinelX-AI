@@ -1,5 +1,6 @@
 import React from 'react';
 import { Shield, Flame, Activity, Brain, Cpu, Mail, Lock, ArrowRight, CheckCircle2, Zap, Radio } from 'lucide-react';
+import { Footer } from '@/components/layout/Footer';
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -115,10 +116,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onOpenLo
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="px-10 py-5 border-t border-white/[0.08] text-center text-xs font-mono text-slate-500">
-        © 2026 SentinelX AI Platform — Enterprise Threat Simulation & AI Detection Framework
-      </footer>
+      {/* Development Team & Enterprise Footer */}
+      <Footer onNavigate={() => onOpenLogin()} />
     </div>
   );
 };

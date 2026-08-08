@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 import { LandingPage } from '@/components/landing/LandingPage';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { DashboardView } from '@/components/dashboard/DashboardView';
@@ -123,6 +124,8 @@ export default function Home() {
         {activeTab === 'ml-engine' && <MLEngineView />}
         {activeTab === 'explainability' && <ExplainabilityView />}
       </main>
+
+      <Footer onNavigate={setActiveTab} />
 
       <AuthModal
         isOpen={isAuthModalOpen}
