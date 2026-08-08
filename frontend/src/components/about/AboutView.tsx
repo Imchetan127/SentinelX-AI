@@ -7,9 +7,9 @@ export const AboutView: React.FC = () => {
   const studentDevelopers = [
     {
       name: 'Chetan B K',
-      role: 'Project Lead & Full Stack AI Developer',
+      role: 'AI Systems Engineer',
       description:
-        'Led the design and development of SentinelX AI, integrating AI-powered cybersecurity workflows, backend services, machine learning, explainable AI, reporting, and deployment.',
+        'Designed and integrated the core AI-driven cybersecurity platform by developing backend services, connecting machine learning models, implementing Explainable AI (XAI), designing secure workflows, and ensuring seamless communication across all system modules.',
       initials: 'CB',
       image: '/images/team/chetan_bk.jpg',
       github: 'https://github.com/Imchetan127',
@@ -17,9 +17,9 @@ export const AboutView: React.FC = () => {
     },
     {
       name: 'H Deepak',
-      role: 'AI & Software Developer',
+      role: 'Backend & AI Engineer',
       description:
-        'Contributed to system development, feature implementation, testing, and collaborative engineering throughout the project.',
+        'Developed backend APIs, integrated AI components, optimized server-side functionality, implemented business logic, and collaborated on testing, debugging, and improving overall platform performance and reliability.',
       initials: 'HD',
       image: '/images/team/h_deepak.png',
       github: 'https://github.com',
@@ -27,9 +27,9 @@ export const AboutView: React.FC = () => {
     },
     {
       name: 'Nivas M R',
-      role: 'Software Developer',
+      role: 'Frontend & Integration Engineer',
       description:
-        'Contributed to frontend development, integration, application improvements, and testing.',
+        'Built responsive user interfaces, integrated frontend components with backend services, enhanced user experience, implemented interactive dashboards, and ensured smooth communication between system modules.',
       initials: 'NM',
       image: '/images/team/nivas_mr.jpg',
       github: 'https://github.com',
@@ -37,9 +37,9 @@ export const AboutView: React.FC = () => {
     },
     {
       name: 'Kiran D',
-      role: 'Software Developer',
+      role: 'Software Quality & Systems Engineer',
       description:
-        'Supported feature development, debugging, quality assurance, and implementation.',
+        'Focused on system validation, feature implementation, software testing, debugging, quality assurance, and performance optimization to ensure the stability and reliability of the SentinelX AI platform.',
       initials: 'KD',
       image: '/images/team/kiran_d.png',
       github: 'https://github.com',
@@ -53,7 +53,7 @@ export const AboutView: React.FC = () => {
     department: 'Department of Artificial Intelligence & Data Science',
     institution: 'K.S. School of Engineering & Management',
     description:
-      'Provided academic mentorship, technical guidance, project reviews, and continuous support throughout the design and development of SentinelX AI.',
+      'Provided academic mentorship, technical guidance, architectural reviews, and continuous support throughout the planning, development, testing, and successful completion of the SentinelX AI platform.',
     initials: 'SK',
   };
 
