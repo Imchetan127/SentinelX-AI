@@ -14,6 +14,7 @@ import { BlueTeamView } from '@/components/blue_team/BlueTeamView';
 import { EmailUrlLabView } from '@/components/email_url_lab/EmailUrlLabView';
 import { MLEngineView } from '@/components/ml_engine/MLEngineView';
 import { ExplainabilityView } from '@/components/explainability/ExplainabilityView';
+import { AboutView } from '@/components/about/AboutView';
 
 const API_BASE = 'http://localhost:8000/api/v1';
 
@@ -137,6 +138,7 @@ export default function Home() {
               {activeTab === 'email-url-lab' && <EmailUrlLabView />}
               {activeTab === 'ml-engine' && <MLEngineView />}
               {activeTab === 'explainability' && <ExplainabilityView />}
+              {activeTab === 'about' && <AboutView />}
             </motion.div>
           </AnimatePresence>
         </main>

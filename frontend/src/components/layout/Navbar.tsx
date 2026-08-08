@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Shield, Flame, Activity, Brain, Cpu, Mail, User, LogOut, Home, Radio } from 'lucide-react';
+import { Shield, Flame, Activity, Brain, Cpu, Mail, User, LogOut, Home, Radio, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface NavbarProps {
@@ -28,6 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'email-url-lab', label: 'Threat Intelligence Lab', icon: Mail },
     { id: 'ml-engine', label: 'ML Benchmarks', icon: Cpu },
     { id: 'explainability', label: 'Explainable AI', icon: Brain },
+    { id: 'about', label: 'About', icon: Info },
   ];
 
   return (
