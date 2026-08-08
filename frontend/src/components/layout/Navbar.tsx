@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
 import { Shield, Flame, Activity, Brain, Cpu, Mail, User, LogOut, Home, Radio } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface NavbarProps {
   activeTab: string;
@@ -28,19 +31,19 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-[#090B10]/90 backdrop-blur-md border-b border-white/[0.08] px-6 py-3.5 flex items-center justify-between min-w-[1280px]">
+    <header className="sticky top-0 z-50 bg-[#090B10]/85 backdrop-blur-md border-b border-white/[0.08] px-6 py-3 flex items-center justify-between min-w-[1280px]">
       {/* Left: Branding & System Status */}
       <div className="flex items-center space-x-5">
         <button
           onClick={onGoHome}
-          className="p-2 rounded-lg bg-[#111827] border border-white/[0.08] hover:border-cyan-500/40 text-slate-400 hover:text-cyan-400 transition-all"
+          className="p-2 rounded-lg bg-[#111827] border border-white/[0.08] hover:border-cyan-500/40 text-slate-400 hover:text-cyan-400 transition-all btn-premium"
           title="Home Portal"
         >
           <Home className="w-4 h-4" />
         </button>
 
         <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
-          <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
+          <div className="p-2 rounded-xl bg-[#00D4FF]/10 border border-[#00D4FF]/30 text-[#00D4FF]">
             <Shield className="w-5 h-5" />
           </div>
           <div>
@@ -48,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <h1 className="text-base font-bold tracking-tight text-white">
                 Sentinel<span className="text-[#00D4FF]">X</span> AI
               </h1>
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-semibold">
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20 font-semibold">
                 v1.0
               </span>
             </div>
@@ -57,14 +60,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Live Operational Status Badge */}
-        <div className="hidden xl:flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
-          <Radio className="w-3 h-3 animate-pulse text-emerald-400" />
+        <div className="hidden xl:flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[#2EE59D] text-xs font-mono">
+          <Radio className="w-3 h-3 animate-pulse text-[#2EE59D]" />
           <span>SOC ACTIVE</span>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <nav className="flex items-center space-x-1 bg-[#111827] p-1 rounded-xl border border-white/[0.08] text-xs font-medium">
+      {/* Navigation Tabs with Framer Motion Sliding Pill */}
+      <nav className="flex items-center space-x-1 bg-[#111827] p-1 rounded-xl border border-white/[0.08] text-xs font-medium relative">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -74,16 +77,29 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg transition-all duration-150 ${
+              className={`relative flex items-center space-x-2 px-3.5 py-2 rounded-lg transition-colors duration-150 ${
                 isActive
                   ? isXAI
-                    ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-sm'
-                    : 'bg-[#161B22] text-[#00D4FF] border border-[#00D4FF]/30 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
+                    ? 'text-purple-300 font-semibold'
+                    : 'text-[#00D4FF] font-semibold'
+                  : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <Icon className={`w-3.5 h-3.5 ${isActive ? (isXAI ? 'text-purple-400' : 'text-[#00D4FF]') : 'text-slate-500'}`} />
-              <span>{item.label}</span>
+              {isActive && (
+                <motion.div
+                  layoutId="activeTabIndicator"
+                  className={`absolute inset-0 rounded-lg ${
+                    isXAI
+                      ? 'bg-purple-500/15 border border-purple-500/30'
+                      : 'bg-[#161B22] border border-[#00D4FF]/30'
+                  }`}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center space-x-2">
+                <Icon className={`w-3.5 h-3.5 ${isActive ? (isXAI ? 'text-purple-400' : 'text-[#00D4FF]') : 'text-slate-500'}`} />
+                <span>{item.label}</span>
+              </span>
             </button>
           );
         })}
@@ -110,7 +126,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <button
               onClick={onLogout}
-              className="p-2 rounded-xl bg-[#111827] border border-white/[0.08] hover:border-[#FF5D73]/40 text-slate-400 hover:text-[#FF5D73] transition-all"
+              className="p-2 rounded-xl bg-[#111827] border border-white/[0.08] hover:border-[#FF5D73]/40 text-slate-400 hover:text-[#FF5D73] transition-all btn-premium"
               title="Sign Out"
             >
               <LogOut className="w-4 h-4" />
@@ -119,7 +135,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         ) : (
           <button
             onClick={onOpenLogin}
-            className="px-4 py-2 rounded-xl bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-slate-950 font-bold text-xs transition-all shadow-md"
+            className="px-4 py-2 rounded-xl bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-slate-950 font-bold text-xs transition-all shadow-md btn-premium"
           >
             Sign In / Register
           </button>

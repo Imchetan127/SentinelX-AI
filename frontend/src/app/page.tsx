@@ -1,8 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { AnimatedBackground } from '@/components/layout/AnimatedBackground';
+import { LoadingScreen } from '@/components/layout/LoadingScreen';
 import { LandingPage } from '@/components/landing/LandingPage';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { DashboardView } from '@/components/dashboard/DashboardView';
@@ -83,49 +86,63 @@ export default function Home() {
   };
 
   if (isAuthLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#090B10] text-[#00D4FF] font-mono text-xs">
-        Initializing Security Operations Center Portal...
-      </div>
-    );
+    return <LoadingScreen onComplete={() => setIsAuthLoading(false)} />;
   }
 
   if (viewMode === 'landing') {
     return (
-      <>
-        <LandingPage
-          onGetStarted={() => setIsAuthModalOpen(true)}
-          onOpenLogin={() => setIsAuthModalOpen(true)}
-        />
+      <div className="relative min-h-screen bg-[#090B10]">
+        <AnimatedBackground />
+        <div className="relative z-10">
+          <LandingPage
+            onGetStarted={() => setIsAuthModalOpen(true)}
+            onOpenLogin={() => setIsAuthModalOpen(true)}
+          />
+        </div>
         <AuthModal
           isOpen={isAuthModalOpen}
           onClose={() => setIsAuthModalOpen(false)}
           onLoginSuccess={handleLoginSuccess}
         />
-      </>
+      </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090B10] min-w-[1280px]">
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        user={user}
-        onOpenLogin={() => setIsAuthModalOpen(true)}
-        onLogout={handleLogout}
-        onGoHome={() => setViewMode('landing')}
-      />
-      <main className="flex-1 p-6 max-w-[1600px] mx-auto w-full">
-        {activeTab === 'dashboard' && <DashboardView />}
-        {activeTab === 'red-team' && <RedTeamView />}
-        {activeTab === 'blue-team' && <BlueTeamView />}
-        {activeTab === 'email-url-lab' && <EmailUrlLabView />}
-        {activeTab === 'ml-engine' && <MLEngineView />}
-        {activeTab === 'explainability' && <ExplainabilityView />}
-      </main>
+    <div className="min-h-screen flex flex-col bg-[#090B10] min-w-[1280px] relative">
+      <AnimatedBackground />
 
-      <Footer onNavigate={setActiveTab} />
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <Navbar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          user={user}
+          onOpenLogin={() => setIsAuthModalOpen(true)}
+          onLogout={handleLogout}
+          onGoHome={() => setViewMode('landing')}
+        />
+
+        <main className="flex-1 p-6 max-w-[1600px] mx-auto w-full">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+            >
+              {activeTab === 'dashboard' && <DashboardView username={user?.username} />}
+              {activeTab === 'red-team' && <RedTeamView />}
+              {activeTab === 'blue-team' && <BlueTeamView />}
+              {activeTab === 'email-url-lab' && <EmailUrlLabView />}
+              {activeTab === 'ml-engine' && <MLEngineView />}
+              {activeTab === 'explainability' && <ExplainabilityView />}
+            </motion.div>
+          </AnimatePresence>
+        </main>
+
+        <Footer onNavigate={setActiveTab} />
+      </div>
 
       <AuthModal
         isOpen={isAuthModalOpen}
