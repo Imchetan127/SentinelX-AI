@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Shield, Flame, Activity, Brain, Cpu, Mail, User, LogOut, Home, Radio, Info } from 'lucide-react';
+import { Shield, Flame, Activity, Brain, Cpu, Mail, User, LogOut, Radio, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface NavbarProps {
@@ -32,40 +32,29 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-[#090B10]/85 backdrop-blur-md border-b border-white/[0.08] px-6 py-3 flex items-center justify-between min-w-[1280px]">
-      {/* Left: Branding & System Status */}
-      <div className="flex items-center space-x-5">
-        <button
-          onClick={onGoHome}
-          className="p-2 rounded-lg bg-[#111827] border border-white/[0.08] hover:border-cyan-500/40 text-slate-400 hover:text-cyan-400 transition-all btn-premium"
-          title="Home Portal"
-        >
-          <Home className="w-4 h-4" />
-        </button>
-
-        <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
-          <div className="p-2 rounded-xl bg-[#00D4FF]/10 border border-[#00D4FF]/30 text-[#00D4FF]">
-            <Shield className="w-5 h-5" />
+    <header className="sticky top-0 z-50 bg-[#090B10]/85 backdrop-blur-md border-b border-white/[0.08] px-6 py-3.5 flex items-center justify-between min-w-[1280px]">
+      {/* Left: Primary SaaS Brand Navigation Element */}
+      <button
+        onClick={() => setActiveTab('dashboard')}
+        className="flex items-center space-x-3 group cursor-pointer transition-all duration-200 hover:brightness-125 hover:scale-[1.01] text-left focus:outline-none"
+        title="SentinelX AI — Dashboard Home"
+      >
+        <div>
+          <div className="flex items-center space-x-2.5">
+            <h1 className="text-base font-extrabold tracking-tight text-white">
+              Sentinel<span className="text-[#00D4FF]">X</span> AI
+            </h1>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20 font-semibold">
+              v1.0
+            </span>
+            <span className="hidden xl:inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[#2EE59D] text-[10px] font-mono">
+              <Radio className="w-2.5 h-2.5 animate-pulse text-[#2EE59D]" />
+              <span>SOC ACTIVE</span>
+            </span>
           </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <h1 className="text-base font-bold tracking-tight text-white">
-                Sentinel<span className="text-[#00D4FF]">X</span> AI
-              </h1>
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20 font-semibold">
-                v1.0
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400 font-mono tracking-wide">ENTERPRISE SOC PLATFORM</p>
-          </div>
+          <p className="text-[10px] text-slate-400 font-mono tracking-widest uppercase">ENTERPRISE SOC PLATFORM</p>
         </div>
-
-        {/* Live Operational Status Badge */}
-        <div className="hidden xl:flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[#2EE59D] text-xs font-mono">
-          <Radio className="w-3 h-3 animate-pulse text-[#2EE59D]" />
-          <span>SOC ACTIVE</span>
-        </div>
-      </div>
+      </button>
 
       {/* Navigation Tabs with Framer Motion Sliding Pill */}
       <nav className="flex items-center space-x-1 bg-[#111827] p-1 rounded-xl border border-white/[0.08] text-xs font-medium relative">
