@@ -13,6 +13,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       description:
         'Led the design and development of SentinelX AI, integrating AI-powered cybersecurity workflows, backend services, machine learning, explainable AI, reporting, and deployment.',
       initials: 'CB',
+      image: '/images/team/chetan_bk.jpg',
       github: 'https://github.com/Imchetan127',
       linkedin: 'https://linkedin.com',
       isFaculty: false,
