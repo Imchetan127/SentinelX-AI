@@ -34,6 +34,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       description:
         'Contributed to frontend development, integration, application improvements, and testing.',
       initials: 'NM',
+      image: '/images/team/nivas_mr.jpg',
       github: 'https://github.com',
       linkedin: 'https://linkedin.com',
       isFaculty: false,
