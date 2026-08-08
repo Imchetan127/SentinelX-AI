@@ -43,6 +43,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       description:
         'Supported feature development, debugging, quality assurance, and implementation.',
       initials: 'KD',
+      image: '/images/team/kiran_d.png',
       github: 'https://github.com',
       linkedin: 'https://linkedin.com',
       isFaculty: false,
@@ -95,17 +96,25 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               )}
 
               <div className="space-y-4">
-                {/* Avatar Placeholder */}
+                {/* Avatar / Profile Photo */}
                 <div className="flex items-center space-x-3">
-                  <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center font-mono font-bold text-sm border ${
-                      member.isFaculty
-                        ? 'bg-amber-500/10 text-amber-300 border-amber-500/40'
-                        : 'bg-[#00D4FF]/10 text-[#00D4FF] border-[#00D4FF]/30'
-                    }`}
-                  >
-                    {member.initials}
-                  </div>
+                  {member.image ? (
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-12 h-12 rounded-full object-cover border border-[#00D4FF]/40 shadow-sm flex-shrink-0"
+                    />
+                  ) : (
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center font-mono font-bold text-sm border flex-shrink-0 ${
+                        member.isFaculty
+                          ? 'bg-amber-500/10 text-amber-300 border-amber-500/40'
+                          : 'bg-[#00D4FF]/10 text-[#00D4FF] border-[#00D4FF]/30'
+                      }`}
+                    >
+                      {member.initials}
+                    </div>
+                  )}
                   <div>
                     <h3 className="text-base font-bold text-white tracking-tight">{member.name}</h3>
                     <p
