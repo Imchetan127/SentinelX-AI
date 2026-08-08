@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'AI-Driven Cyber Threat Simulation & Detection Platform',
-  description: 'Enterprise Red Team vs Blue Team Framework leveraging AI/ML and Explainable AI',
+  title: 'SentinelX AI — Enterprise Security Operations & Threat Intelligence Platform',
+  description: 'Autonomous Red Team Simulation, Blue Team AI Detection, SHAP Explainability & SOC Incident Reporting Platform',
 };
 
 export default function RootLayout({
@@ -13,7 +13,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-[#090d16] text-slate-100 antialiased min-h-screen">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body className="bg-[#090B10] text-slate-100 antialiased min-h-screen selection:bg-cyan-500/20 selection:text-cyan-200">
         {children}
       </body>
     </html>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Globe, Search, ArrowRight } from 'lucide-react';
+import { Mail, Globe, Search, ArrowRight, ShieldCheck, ShieldAlert, Lock, Server } from 'lucide-react';
 
 const API_BASE = 'http://localhost:8000/api/v1';
 
@@ -103,45 +103,54 @@ export const EmailUrlLabView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="glass-panel p-6 rounded-2xl border border-cyan-500/30 flex items-center justify-between">
+      {/* Header Banner */}
+      <div className="glass-panel p-6 rounded-2xl border border-white/[0.08] flex items-center justify-between">
         <div className="space-y-1">
-          <h2 className="text-xl font-bold text-slate-100 flex items-center space-x-2">
-            <Mail className="w-6 h-6 text-cyan-400" />
-            <span className="gradient-text-blue">Spam Email & Malicious URL AI Simulation & Detection Lab</span>
-          </h2>
-          <p className="text-sm text-slate-400">
-            Dedicated laboratory for testing phishing URLs, domain feature entropy, spam email headers, and automated AI classification models.
+          <div className="flex items-center space-x-3">
+            <div className="p-2 rounded-xl bg-[#00D4FF]/10 text-[#00D4FF]">
+              <Globe className="w-5 h-5" />
+            </div>
+            <h2 className="text-xl font-bold text-white tracking-tight">Threat Intelligence & Phishing Lab</h2>
+          </div>
+          <p className="text-xs text-slate-400">
+            Dedicated laboratory for extracting URL domain feature entropy, analyzing suspicious TLDs, inspecting spam email headers, and validating SPF/DKIM/DMARC signatures.
           </p>
         </div>
 
-        <div className="flex items-center space-x-2 bg-slate-900/80 p-1.5 rounded-xl border border-slate-800 font-mono text-xs">
+        <div className="flex items-center space-x-1.5 bg-[#111827] p-1.5 rounded-xl border border-white/[0.08] font-mono text-xs">
           <button
             onClick={() => setActiveSubTab('url')}
             className={`px-4 py-2 rounded-lg font-medium transition-all ${
-              activeSubTab === 'url' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'text-slate-400 hover:text-slate-200'
+              activeSubTab === 'url'
+                ? 'bg-[#161B22] text-[#00D4FF] border border-[#00D4FF]/30 shadow-sm'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            URL Phishing Inspector
+            URL Intelligence
           </button>
           <button
             onClick={() => setActiveSubTab('email')}
             className={`px-4 py-2 rounded-lg font-medium transition-all ${
-              activeSubTab === 'email' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40' : 'text-slate-400 hover:text-slate-200'
+              activeSubTab === 'email'
+                ? 'bg-[#161B22] text-purple-300 border border-purple-500/30 shadow-sm'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            Spam Email AI Inspector
+            Email Intelligence
           </button>
         </div>
       </div>
 
       {activeSubTab === 'url' ? (
-        /* URL PHISHING SECTION */
+        /* URL INTELLIGENCE WORKSPACE */
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 glass-panel p-6 rounded-2xl border border-slate-800 space-y-5">
-            <h3 className="text-sm font-bold text-slate-200 uppercase font-mono flex items-center space-x-2">
-              <Globe className="w-4 h-4 text-cyan-400" />
-              <span>URL Phishing Simulation & Feature Extraction</span>
-            </h3>
+          <div className="lg:col-span-2 glass-panel p-6 rounded-2xl border border-white/[0.08] space-y-5">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+              <h3 className="text-sm font-bold text-white uppercase font-mono flex items-center space-x-2">
+                <Globe className="w-4 h-4 text-[#00D4FF]" />
+                <span>URL Phishing Inspection & Entropy Extraction</span>
+              </h3>
+            </div>
 
             <div className="space-y-2">
               <label className="text-xs font-mono text-slate-400">Target Web URL String:</label>
@@ -150,24 +159,24 @@ export const EmailUrlLabView: React.FC = () => {
                   type="text"
                   value={inputUrl}
                   onChange={(e) => setInputUrl(e.target.value)}
-                  className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono text-cyan-300 focus:outline-none focus:border-cyan-500"
+                  className="flex-1 bg-[#090B10] border border-white/[0.08] rounded-xl px-4 py-3 text-xs font-mono text-[#00D4FF] focus:outline-none focus:border-[#00D4FF]/50"
                   placeholder="https://example.com/login"
                 />
                 <button
                   onClick={() => handleInspectUrl()}
                   disabled={isUrlAnalyzing}
-                  className="px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-xs font-mono flex items-center space-x-2 transition-all glow-blue disabled:opacity-50"
+                  className="px-6 py-3 rounded-xl bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-slate-950 font-bold text-xs font-mono flex items-center space-x-2 transition-all shadow-md disabled:opacity-50"
                 >
                   <Search className="w-4 h-4" />
-                  <span>{isUrlAnalyzing ? 'Analyzing...' : 'Analyze URL'}</span>
+                  <span>{isUrlAnalyzing ? 'ANALYZING...' : 'ANALYZE URL'}</span>
                 </button>
               </div>
             </div>
 
             {/* Presets */}
             <div className="space-y-2">
-              <span className="text-xs font-mono text-slate-400">Select Preset Simulation URLs:</span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <span className="text-xs font-mono text-slate-400">Preset Simulation Targets:</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {sampleUrls.map((s, idx) => (
                   <button
                     key={idx}
@@ -175,10 +184,10 @@ export const EmailUrlLabView: React.FC = () => {
                       setInputUrl(s.url);
                       handleInspectUrl(s.url);
                     }}
-                    className="p-3 rounded-xl bg-slate-900/60 hover:bg-slate-800 border border-slate-800 text-left text-xs font-mono space-y-1 transition-all"
+                    className="p-3.5 rounded-xl bg-[#111827] hover:bg-[#111827]/80 border border-white/[0.08] hover:border-white/[0.16] text-left text-xs font-mono space-y-1 transition-all"
                   >
-                    <span className="text-cyan-400 font-bold block">{s.label}</span>
-                    <span className="text-slate-400 truncate block text-[11px]">{s.url}</span>
+                    <span className="text-[#00D4FF] font-bold block">{s.label}</span>
+                    <span className="text-slate-400 truncate block text-[11px] font-mono">{s.url}</span>
                   </button>
                 ))}
               </div>
@@ -186,42 +195,50 @@ export const EmailUrlLabView: React.FC = () => {
 
             {/* Results Output */}
             {urlResult && (
-              <div className="space-y-4 pt-4 border-t border-slate-800">
-                <div className={`p-4 rounded-xl border flex items-center justify-between ${
-                  urlResult.is_phishing ? 'bg-rose-500/10 border-rose-500/40 glow-red' : 'bg-emerald-500/10 border-emerald-500/40'
-                }`}>
+              <div className="space-y-4 pt-4 border-t border-white/[0.08]">
+                <div
+                  className={`p-4 rounded-xl border flex items-center justify-between ${
+                    urlResult.is_phishing
+                      ? 'bg-[#FF5D73]/10 border-[#FF5D73]/30'
+                      : 'bg-[#2EE59D]/10 border-[#2EE59D]/30'
+                  }`}
+                >
                   <div>
-                    <span className="text-xs uppercase font-mono text-slate-400">Classification Status</span>
-                    <h4 className={`text-lg font-bold font-mono ${urlResult.is_phishing ? 'text-rose-400' : 'text-emerald-400'}`}>
+                    <span className="text-[10px] uppercase font-mono text-slate-400">Classification Outcome</span>
+                    <h4
+                      className={`text-lg font-bold font-mono ${
+                        urlResult.is_phishing ? 'text-[#FF5D73]' : 'text-[#2EE59D]'
+                      }`}
+                    >
                       {urlResult.category}
                     </h4>
                   </div>
                   <div className="text-right font-mono">
-                    <span className="text-xs uppercase text-slate-400">Threat Score</span>
-                    <p className="text-2xl font-bold text-white">{(urlResult.threat_score * 100).toFixed(0)} / 100</p>
+                    <span className="text-[10px] uppercase text-slate-400">Threat Score</span>
+                    <p className="text-2xl font-bold text-white">{(urlResult.threat_score * 100).toFixed(0)} <span className="text-xs text-slate-400">/ 100</span></p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
-                    <span className="text-slate-500">IP Host Check:</span>
-                    <p className={`font-bold mt-1 ${urlResult.extracted_features?.has_ip_address ? 'text-rose-400' : 'text-emerald-400'}`}>
+                  <div className="p-3 rounded-xl bg-[#111827] border border-white/[0.08]">
+                    <span className="text-slate-400 text-[10px] block">IP Host Check</span>
+                    <p className={`font-bold mt-1 ${urlResult.extracted_features?.has_ip_address ? 'text-[#FF5D73]' : 'text-[#2EE59D]'}`}>
                       {urlResult.extracted_features?.has_ip_address ? 'YES (IP Host)' : 'NO (Domain Host)'}
                     </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
-                    <span className="text-slate-500">URL Length:</span>
+                  <div className="p-3 rounded-xl bg-[#111827] border border-white/[0.08]">
+                    <span className="text-slate-400 text-[10px] block">URL Length</span>
                     <p className="text-slate-200 font-bold mt-1">{urlResult.extracted_features?.url_length} chars</p>
                   </div>
-                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
-                    <span className="text-slate-500">HTTPS Encryption:</span>
-                    <p className={`font-bold mt-1 ${urlResult.extracted_features?.is_https ? 'text-emerald-400' : 'text-amber-400'}`}>
-                      {urlResult.extracted_features?.is_https ? 'SSL/HTTPS Encrypted' : 'Unencrypted HTTP'}
+                  <div className="p-3 rounded-xl bg-[#111827] border border-white/[0.08]">
+                    <span className="text-slate-400 text-[10px] block">SSL Status</span>
+                    <p className={`font-bold mt-1 ${urlResult.extracted_features?.is_https ? 'text-[#2EE59D]' : 'text-[#FFB547]'}`}>
+                      {urlResult.extracted_features?.is_https ? 'HTTPS Encrypted' : 'HTTP Unencrypted'}
                     </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
-                    <span className="text-slate-500">Brand Keywords:</span>
-                    <p className="text-cyan-300 font-bold mt-1">{urlResult.extracted_features?.suspicious_keyword_count} matched</p>
+                  <div className="p-3 rounded-xl bg-[#111827] border border-white/[0.08]">
+                    <span className="text-slate-400 text-[10px] block">Brand Keywords</span>
+                    <p className="text-[#00D4FF] font-bold mt-1">{urlResult.extracted_features?.suspicious_keyword_count} matched</p>
                   </div>
                 </div>
               </div>
@@ -229,28 +246,28 @@ export const EmailUrlLabView: React.FC = () => {
           </div>
 
           {/* Right Info Box */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h4 className="text-sm font-bold text-slate-200 uppercase font-mono">Extracted URL Indicators</h4>
+          <div className="glass-panel p-6 rounded-2xl border border-white/[0.08] space-y-4">
+            <h4 className="text-sm font-bold text-white uppercase font-mono">Extracted Feature Indicators</h4>
             {urlResult ? (
               <div className="space-y-2 font-mono text-xs">
                 {urlResult.indicators?.map((ind: string, idx: number) => (
-                  <div key={idx} className="p-2.5 rounded bg-slate-900 border border-slate-800 text-amber-300">
+                  <div key={idx} className="p-3 rounded-xl bg-[#111827] border border-white/[0.08] text-[#FFB547]">
                     • {ind}
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-slate-500 font-mono">Run a URL scan above to generate feature extraction logs.</p>
+              <p className="text-xs text-slate-500 font-mono">Run a URL scan above to extract security indicators.</p>
             )}
           </div>
         </div>
       ) : (
-        /* SPAM EMAIL SECTION */
+        /* EMAIL INTELLIGENCE WORKSPACE */
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h3 className="text-sm font-bold text-slate-200 uppercase font-mono flex items-center space-x-2">
+          <div className="lg:col-span-2 glass-panel p-6 rounded-2xl border border-white/[0.08] space-y-4">
+            <h3 className="text-sm font-bold text-white uppercase font-mono flex items-center space-x-2 border-b border-white/[0.08] pb-3">
               <Mail className="w-4 h-4 text-purple-400" />
-              <span>Spam Email Header & Content Simulator</span>
+              <span>Spam Email Header & Payload Inspection</span>
             </h3>
 
             <div className="space-y-3 font-mono text-xs">
@@ -260,7 +277,7 @@ export const EmailUrlLabView: React.FC = () => {
                   type="text"
                   value={emailSubject}
                   onChange={(e) => setEmailSubject(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-purple-500"
+                  className="w-full bg-[#090B10] border border-white/[0.08] rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-purple-500"
                 />
               </div>
 
@@ -270,7 +287,7 @@ export const EmailUrlLabView: React.FC = () => {
                   type="text"
                   value={emailSender}
                   onChange={(e) => setEmailSender(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-purple-500"
+                  className="w-full bg-[#090B10] border border-white/[0.08] rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-purple-500"
                 />
               </div>
 
@@ -280,24 +297,24 @@ export const EmailUrlLabView: React.FC = () => {
                   value={emailBody}
                   onChange={(e) => setEmailBody(e.target.value)}
                   rows={5}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-200 focus:outline-none focus:border-purple-500"
+                  className="w-full bg-[#090B10] border border-white/[0.08] rounded-xl p-4 text-slate-200 focus:outline-none focus:border-purple-500 leading-relaxed"
                 />
               </div>
 
               <button
                 onClick={handleInspectEmail}
                 disabled={isEmailAnalyzing}
-                className="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-medium text-xs font-mono flex items-center justify-center space-x-2 transition-all glow-purple disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs font-mono flex items-center justify-center space-x-2 transition-all shadow-md disabled:opacity-50"
               >
                 <Search className="w-4 h-4" />
-                <span>{isEmailAnalyzing ? 'Analyzing Email...' : 'Inspect Email with AI Model'}</span>
+                <span>{isEmailAnalyzing ? 'INSPECTING EMAIL...' : 'INSPECT EMAIL WITH AI MODEL'}</span>
               </button>
             </div>
 
             {/* Email Presets */}
-            <div className="space-y-2 pt-2">
+            <div className="space-y-2 pt-2 border-t border-white/[0.08]">
               <span className="text-xs font-mono text-slate-400">Preset Attack Scenarios:</span>
-              <div className="space-y-1.5 font-mono text-xs">
+              <div className="space-y-2 font-mono text-xs">
                 {sampleEmails.map((se, idx) => (
                   <div
                     key={idx}
@@ -306,7 +323,7 @@ export const EmailUrlLabView: React.FC = () => {
                       setEmailSender(se.sender);
                       setEmailBody(se.body);
                     }}
-                    className="p-3 rounded-xl bg-slate-900/60 hover:bg-slate-800 border border-slate-800 cursor-pointer transition-all flex items-center justify-between"
+                    className="p-3.5 rounded-xl bg-[#111827] hover:bg-[#111827]/80 border border-white/[0.08] cursor-pointer transition-all flex items-center justify-between"
                   >
                     <div>
                       <span className="text-purple-300 font-bold block">{se.label}</span>
@@ -320,57 +337,77 @@ export const EmailUrlLabView: React.FC = () => {
           </div>
 
           {/* Email Result Output */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h4 className="text-sm font-bold text-slate-200 uppercase font-mono">Email AI Scorecard</h4>
+          <div className="glass-panel p-6 rounded-2xl border border-white/[0.08] space-y-4">
+            <h4 className="text-sm font-bold text-white uppercase font-mono">Email AI Scorecard</h4>
             {emailResult ? (
               <div className="space-y-4 font-mono text-xs">
-                <div className={`p-4 rounded-xl border flex items-center justify-between ${
-                  emailResult.is_spam ? 'bg-rose-500/10 border-rose-500/40 glow-red' : 'bg-emerald-500/10 border-emerald-500/40'
-                }`}>
+                <div
+                  className={`p-4 rounded-xl border flex items-center justify-between ${
+                    emailResult.is_spam
+                      ? 'bg-[#FF5D73]/10 border-[#FF5D73]/30'
+                      : 'bg-[#2EE59D]/10 border-[#2EE59D]/30'
+                  }`}
+                >
                   <div>
-                    <span className="text-slate-400 uppercase text-[10px]">Result</span>
-                    <h4 className={`text-base font-bold ${emailResult.is_spam ? 'text-rose-400' : 'text-emerald-400'}`}>
+                    <span className="text-slate-400 uppercase text-[10px]">Classification</span>
+                    <h4
+                      className={`text-base font-bold ${
+                        emailResult.is_spam ? 'text-[#FF5D73]' : 'text-[#2EE59D]'
+                      }`}
+                    >
                       {emailResult.category}
                     </h4>
                   </div>
                   <div className="text-right">
                     <span className="text-slate-400 uppercase text-[10px]">Threat Score</span>
-                    <p className="text-xl font-bold text-white">{(emailResult.threat_score * 100).toFixed(0)} / 100</p>
+                    <p className="text-xl font-bold text-white">{(emailResult.threat_score * 100).toFixed(0)} <span className="text-xs text-slate-400">/ 100</span></p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="p-2 rounded bg-slate-900 border border-slate-800">
-                    <span className="text-slate-500 block text-[10px]">SPF Header</span>
-                    <span className={`font-bold ${emailResult.spf_status === 'FAIL' ? 'text-rose-400' : 'text-emerald-400'}`}>
+                  <div className="p-2.5 rounded-xl bg-[#111827] border border-white/[0.08]">
+                    <span className="text-slate-400 block text-[10px]">SPF Header</span>
+                    <span
+                      className={`font-bold mt-1 block ${
+                        emailResult.spf_status === 'FAIL' ? 'text-[#FF5D73]' : 'text-[#2EE59D]'
+                      }`}
+                    >
                       {emailResult.spf_status}
                     </span>
                   </div>
-                  <div className="p-2 rounded bg-slate-900 border border-slate-800">
-                    <span className="text-slate-500 block text-[10px]">DKIM Status</span>
-                    <span className={`font-bold ${emailResult.dkim_status === 'FAIL' ? 'text-rose-400' : 'text-emerald-400'}`}>
+                  <div className="p-2.5 rounded-xl bg-[#111827] border border-white/[0.08]">
+                    <span className="text-slate-400 block text-[10px]">DKIM Status</span>
+                    <span
+                      className={`font-bold mt-1 block ${
+                        emailResult.dkim_status === 'FAIL' ? 'text-[#FF5D73]' : 'text-[#2EE59D]'
+                      }`}
+                    >
                       {emailResult.dkim_status}
                     </span>
                   </div>
-                  <div className="p-2 rounded bg-slate-900 border border-slate-800">
-                    <span className="text-slate-500 block text-[10px]">DMARC Rule</span>
-                    <span className={`font-bold ${emailResult.dmarc_status === 'REJECT' ? 'text-rose-400' : 'text-emerald-400'}`}>
+                  <div className="p-2.5 rounded-xl bg-[#111827] border border-white/[0.08]">
+                    <span className="text-slate-400 block text-[10px]">DMARC Rule</span>
+                    <span
+                      className={`font-bold mt-1 block ${
+                        emailResult.dmarc_status === 'REJECT' ? 'text-[#FF5D73]' : 'text-[#2EE59D]'
+                      }`}
+                    >
                       {emailResult.dmarc_status}
                     </span>
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <span className="text-slate-400">Matched Threat Signals:</span>
+                <div className="space-y-2">
+                  <span className="text-slate-400 font-semibold">Matched Threat Signals:</span>
                   {emailResult.indicators?.map((ind: string, idx: number) => (
-                    <div key={idx} className="p-2 rounded bg-slate-900 border border-slate-800 text-amber-300 text-[11px]">
+                    <div key={idx} className="p-2.5 rounded-xl bg-[#111827] border border-white/[0.08] text-[#FFB547]">
                       • {ind}
                     </div>
                   ))}
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-slate-500 font-mono">Submit email details to generate AI email classification metrics.</p>
+              <p className="text-xs text-slate-500 font-mono">Submit email details above to generate email AI classification scorecard.</p>
             )}
           </div>
         </div>

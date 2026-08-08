@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Flame, Activity, Brain, Cpu, Mail, User, LogOut, Home } from 'lucide-react';
+import { Shield, Flame, Activity, Brain, Cpu, Mail, User, LogOut, Home, Radio } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: string;
@@ -19,72 +19,90 @@ export const Navbar: React.FC<NavbarProps> = ({
   onGoHome,
 }) => {
   const navItems = [
-    { id: 'dashboard', label: 'Security Dashboard', icon: Activity },
+    { id: 'dashboard', label: 'Overview', icon: Activity },
     { id: 'red-team', label: 'Red Team Simulator', icon: Flame },
     { id: 'blue-team', label: 'Blue Team AI Inspector', icon: Shield },
-    { id: 'email-url-lab', label: 'Spam Email & URL Lab', icon: Mail },
-    { id: 'ml-engine', label: 'ML Benchmarks & Trainer', icon: Cpu },
-    { id: 'explainability', label: 'Explainable AI (XAI)', icon: Brain },
+    { id: 'email-url-lab', label: 'Threat Intelligence Lab', icon: Mail },
+    { id: 'ml-engine', label: 'ML Benchmarks', icon: Cpu },
+    { id: 'explainability', label: 'Explainable AI', icon: Brain },
   ];
 
   return (
-    <header className="sticky top-0 z-50 glass-panel border-b border-cyan-500/20 px-8 py-4 flex items-center justify-between min-w-[1024px]">
-      <div className="flex items-center space-x-4">
+    <header className="sticky top-0 z-50 bg-[#090B10]/90 backdrop-blur-md border-b border-white/[0.08] px-6 py-3.5 flex items-center justify-between min-w-[1280px]">
+      {/* Left: Branding & System Status */}
+      <div className="flex items-center space-x-5">
         <button
           onClick={onGoHome}
-          className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-slate-300 hover:text-cyan-400 transition-all flex items-center space-x-1"
-          title="Return to Home Landing Page"
+          className="p-2 rounded-lg bg-[#111827] border border-white/[0.08] hover:border-cyan-500/40 text-slate-400 hover:text-cyan-400 transition-all"
+          title="Home Portal"
         >
-          <Home className="w-5 h-5" />
+          <Home className="w-4 h-4" />
         </button>
 
         <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
-          <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/40 glow-blue">
-            <Shield className="w-6 h-6 text-cyan-400" />
+          <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
+            <Shield className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-xl font-bold tracking-wider gradient-text-blue">
-              CYBER-AI DISRUPT
-            </h1>
-            <p className="text-xs text-slate-400 uppercase tracking-widest font-mono">Red Team vs Blue Team Framework</p>
+            <div className="flex items-center space-x-2">
+              <h1 className="text-base font-bold tracking-tight text-white">
+                Sentinel<span className="text-[#00D4FF]">X</span> AI
+              </h1>
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-semibold">
+                v1.0
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 font-mono tracking-wide">ENTERPRISE SOC PLATFORM</p>
           </div>
+        </div>
+
+        {/* Live Operational Status Badge */}
+        <div className="hidden xl:flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
+          <Radio className="w-3 h-3 animate-pulse text-emerald-400" />
+          <span>SOC ACTIVE</span>
         </div>
       </div>
 
-      <nav className="flex items-center space-x-1 bg-slate-900/80 p-1.5 rounded-xl border border-slate-800 font-mono text-xs">
+      {/* Navigation Tabs */}
+      <nav className="flex items-center space-x-1 bg-[#111827] p-1 rounded-xl border border-white/[0.08] text-xs font-medium">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
+          const isXAI = item.id === 'explainability';
+
           return (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${
+              className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg transition-all duration-150 ${
                 isActive
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm glow-blue'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                  ? isXAI
+                    ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-sm'
+                    : 'bg-[#161B22] text-[#00D4FF] border border-[#00D4FF]/30 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : ''}`} />
+              <Icon className={`w-3.5 h-3.5 ${isActive ? (isXAI ? 'text-purple-400' : 'text-[#00D4FF]') : 'text-slate-500'}`} />
               <span>{item.label}</span>
             </button>
           );
         })}
       </nav>
 
-      <div className="flex items-center space-x-3 font-mono text-xs">
+      {/* Right: Authenticated User & Actions */}
+      <div className="flex items-center space-x-3 text-xs font-mono">
         {user ? (
           <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-200">
-              <User className="w-4 h-4 text-cyan-400" />
-              <span className="font-bold text-sm tracking-wide text-white">{user.username}</span>
+            <div className="flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-[#111827] border border-white/[0.08] text-slate-200">
+              <User className="w-3.5 h-3.5 text-[#00D4FF]" />
+              <span className="font-semibold text-xs tracking-wide text-white">{user.username}</span>
               <span
-                className={`text-[10px] px-2.5 py-0.5 rounded-md uppercase tracking-wider ${
+                className={`text-[10px] px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider ${
                   (user.role || 'USER').toUpperCase() === 'ADMIN'
-                    ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                    ? 'bg-[#FF5D73]/15 text-[#FF5D73] border border-[#FF5D73]/30'
                     : (user.role || 'USER').toUpperCase().includes('ANALYST')
-                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                    : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                    ? 'bg-[#00D4FF]/15 text-[#00D4FF] border border-[#00D4FF]/30'
+                    : 'bg-[#2EE59D]/15 text-[#2EE59D] border border-[#2EE59D]/30'
                 }`}
               >
                 {(user.role || 'USER').toUpperCase()}
@@ -92,17 +110,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <button
               onClick={onLogout}
-              className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-rose-500/40 text-slate-400 hover:text-rose-400 transition-all"
-              title="Logout"
+              className="p-2 rounded-xl bg-[#111827] border border-white/[0.08] hover:border-[#FF5D73]/40 text-slate-400 hover:text-[#FF5D73] transition-all"
+              title="Sign Out"
             >
               <LogOut className="w-4 h-4" />
             </button>
           </div>
         ) : (
-
           <button
             onClick={onOpenLogin}
-            className="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-xs font-mono transition-all glow-blue"
+            className="px-4 py-2 rounded-xl bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-slate-950 font-bold text-xs transition-all shadow-md"
           >
             Sign In / Register
           </button>

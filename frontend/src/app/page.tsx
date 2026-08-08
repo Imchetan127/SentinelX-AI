@@ -83,8 +83,8 @@ export default function Home() {
 
   if (isAuthLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#090d16] text-cyan-300 font-mono">
-        Verifying authentication...
+      <div className="min-h-screen flex items-center justify-center bg-[#090B10] text-[#00D4FF] font-mono text-xs">
+        Initializing Security Operations Center Portal...
       </div>
     );
   }
@@ -106,7 +106,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090d16] min-w-[1280px]">
+    <div className="min-h-screen flex flex-col bg-[#090B10] min-w-[1280px]">
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -115,7 +115,7 @@ export default function Home() {
         onLogout={handleLogout}
         onGoHome={() => setViewMode('landing')}
       />
-      <main className="flex-1 p-8 max-w-[1600px] mx-auto w-full">
+      <main className="flex-1 p-6 max-w-[1600px] mx-auto w-full">
         {activeTab === 'dashboard' && <DashboardView />}
         {activeTab === 'red-team' && <RedTeamView />}
         {activeTab === 'blue-team' && <BlueTeamView />}
