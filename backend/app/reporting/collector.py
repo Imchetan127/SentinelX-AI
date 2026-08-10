@@ -30,10 +30,43 @@ class IncidentCollector:
     def collect_incident(self, incident_id: UUID) -> Dict[str, Any]:
         """Fetch the incident and related attack/detection/user entities."""
         incident = self.db.get(Incident, incident_id)
+        attack = None
         if incident is None:
-            raise FileNotFoundError(f"Incident '{incident_id}' not found in database.")
+            # Fallback: check if incident_id is an Attack ID
+            attack = self.db.get(Attack, incident_id)
+            if attack and attack.incident:
+                incident = attack.incident
+            elif attack:
+                # Construct synthetic incident representation from Attack
+                return {
+                    "incident": {
+                        "id": str(attack.id),
+                        "title": f"Security Incident: {attack.type}",
+                        "description": f"Automated SOC Incident generated for payload attack vector '{attack.type}'.",
+                        "status": attack.status.value if hasattr(attack.status, "value") else str(attack.status),
+                        "priority": attack.severity.value if hasattr(attack.severity, "value") else str(attack.severity),
+                        "opened_at": attack.timestamp.isoformat() if attack.timestamp else None,
+                        "closed_at": None,
+                        "assigned_user": "AI Blue Team Engine",
+                        "assigned_user_role": "SOAR Automation",
+                    },
+                    "attack": {
+                        "id": str(attack.id),
+                        "type": attack.type,
+                        "payload": attack.payload,
+                        "target": attack.target,
+                        "severity": attack.severity.value if hasattr(attack.severity, "value") else str(attack.severity),
+                        "status": attack.status.value if hasattr(attack.status, "value") else str(attack.status),
+                        "timestamp": attack.timestamp.isoformat() if attack.timestamp else None,
+                        "source_ip": getattr(attack, "source_ip", "198.51.100.42"),
+                    },
+                    "detections": [],
+                    "primary_detection": None,
+                }
+            else:
+                raise FileNotFoundError(f"Incident or Attack '{incident_id}' not found in database.")
 
-        attack = incident.attack
+        attack = attack or incident.attack
         detections = attack.detections if attack else []
         primary_detection = detections[0] if detections else None
 

@@ -60,6 +60,56 @@ def list_explanations_api(
         )
 
 
+@router.get("/attack/{attack_id}")
+def get_explanation_by_attack_api(
+    attack_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
+) -> Dict[str, Any]:
+    """Retrieve SHAP explanation for an attack simulation."""
+    from app.models.detection import Detection
+    from app.models.prediction import Prediction
+    from app.models.explanation import Explanation
+    from sqlalchemy import select
+
+    detection = db.scalars(select(Detection).where(Detection.attack_id == attack_id)).first()
+    if not detection:
+        return {"success": False, "status": "unavailable", "message": f"No detection found for attack '{attack_id}'"}
+
+    predictions = db.scalars(select(Prediction).where(Prediction.detection_id == detection.id)).all()
+    pred_ids = [p.id for p in predictions]
+
+    explanation = None
+    if pred_ids:
+        explanation = db.scalars(
+            select(Explanation).where(Explanation.prediction_id.in_(pred_ids)).order_by(Explanation.explained_at.desc())
+        ).first()
+
+    if not explanation:
+        return {"success": False, "status": "unavailable", "message": "No SHAP explanation generated for this attack yet"}
+
+    return {
+        "success": True,
+        "status": "completed",
+        "data": {
+            "id": str(explanation.id),
+            "prediction_id": str(explanation.prediction_id) if explanation.prediction_id else None,
+            "model_id": str(explanation.model_id) if explanation.model_id else None,
+            "algorithm": explanation.algorithm,
+            "model_version": explanation.model_version,
+            "prediction_label": explanation.prediction_label,
+            "confidence": explanation.confidence,
+            "base_value": explanation.base_value,
+            "feature_names": explanation.feature_names,
+            "shap_values": explanation.shap_values,
+            "feature_importance": explanation.feature_importance,
+            "top_positive_contributors": explanation.top_positive_contributors,
+            "human_readable_summary": f"SHAP attribution complete for {explanation.prediction_label}. Top positive factor: {explanation.top_positive_contributors[0]['feature'] if explanation.top_positive_contributors else 'N/A'}.",
+            "explained_at": explanation.explained_at.isoformat() if explanation.explained_at else None
+        }
+    }
+
+
 @router.post("/{prediction_id}")
 def generate_explanation_api(
     prediction_id: UUID,

@@ -30,10 +30,18 @@ class ReportPersistence:
         summary: Optional[str] = None,
         recommendations: Optional[str] = None,
     ) -> Report:
-        """Create and commit a Report database record."""
+        valid_user_id = None
+        if generated_by:
+            try:
+                from app.models.user import User
+                if self.db.get(User, generated_by):
+                    valid_user_id = generated_by
+            except Exception:
+                valid_user_id = None
+
         report = Report(
             incident_id=incident_id,
-            created_by=generated_by,
+            created_by=valid_user_id,
             pdf_path=pdf_path,
             sha256_hash=sha256_hash,
             title=title,

@@ -20,3 +20,4 @@ class Detection(Base):
 
     attack = relationship("Attack", back_populates="detections")
     predictions = relationship("Prediction", back_populates="detection", cascade="all, delete-orphan")
+    mitigations = relationship("Mitigation", back_populates="detection", cascade="all, delete-orphan")

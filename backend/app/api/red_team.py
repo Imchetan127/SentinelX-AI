@@ -8,6 +8,8 @@ from app.database.session import get_db
 from app.services.attack_service import AttackService
 from app.services.audit_service import AuditService
 
+from app.services.event_pipeline_service import EventPipelineService
+
 router = APIRouter(
     prefix="/red-team",
     tags=["Red Team Simulations"],
@@ -28,6 +30,7 @@ def run_simulation(vector_id: str, db: Session = Depends(get_db), current_user: 
     user_id = UUID(current_user["id"]) if current_user.get("id") else None
     attack_service = AttackService(db)
     payload_str = str(vector["payload"])
+    source_ip = vector.get("source_ip") or vector.get("payload", {}).get("headers", {}).get("X-Originating-IP") or "198.51.100.42"
     attack = attack_service.create_attack(
         user_id=user_id,
         attack_type=vector["name"],
@@ -35,20 +38,17 @@ def run_simulation(vector_id: str, db: Session = Depends(get_db), current_user: 
         target="system",
         severity=vector["risk_level"].lower(),
         status="completed",
-        source_ip="127.0.0.1",
+        source_ip=source_ip,
     )
 
-    # 3. Log Launch Attack action
-    audit_service = AuditService(db)
-    audit_service.log_action(
-        user_id=user_id,
-        action="LAUNCH_ATTACK",
-        resource="Attack",
-        resource_id=attack.id,
-        ip_address="127.0.0.1",
-        status="success",
-        details=f"Red Team Simulation executed: {vector['name']} ({vector['category']}) [Severity: {attack.severity.value}]",
-    )
+    # 3. Trigger End-to-End Blue Team Detection Pipeline Server-Side
+    pipeline_service = EventPipelineService(db)
+    pipeline_output = pipeline_service.process_attack(attack.id, user_id=user_id)
+
+    # 4. Attach persistent correlation keys and pipeline execution details
+    sim_result["attack_id"] = str(attack.id)
+    sim_result["pipeline"] = pipeline_output
+    sim_result["status"] = "success"
 
     return sim_result
 

@@ -1,4 +1,5 @@
 import time
+from datetime import datetime, timezone
 from typing import Dict, Any, List
 
 SIMULATED_VECTORS = [
@@ -7,6 +8,7 @@ SIMULATED_VECTORS = [
         "name": "Spear Phishing Email - Executive Impersonation",
         "category": "Phishing Email",
         "risk_level": "High",
+        "source_ip": "185.220.101.5",
         "expected_behaviour": "Urgent request from CEO requesting wire transfer update with suspicious login link.",
         "payload": {
             "subject": "URGENT: Quarterly Financial Audit & Payroll Re-verification",
@@ -15,6 +17,7 @@ SIMULATED_VECTORS = [
             "headers": {"X-Originating-IP": "185.220.101.5", "SPF": "FAIL", "DKIM": "FAIL"}
         },
         "success_probability": 0.82,
+        "scenario_baseline_success_probability": 0.82,
         "explanation": "Simulates spear phishing targeting high-level credentials using spoofed domain names and synthetic urgent language."
     },
     {
@@ -22,6 +25,7 @@ SIMULATED_VECTORS = [
         "name": "SQL Injection - Auth Bypass & Union Extraction",
         "category": "SQL Injection Simulation",
         "risk_level": "Critical",
+        "source_ip": "198.51.100.42",
         "expected_behaviour": "Authentication bypass payload targetting user login parameters.",
         "payload": {
             "target_endpoint": "/api/v1/auth/login",
@@ -33,6 +37,7 @@ SIMULATED_VECTORS = [
             "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Sqlmap/1.6.4"
         },
         "success_probability": 0.94,
+        "scenario_baseline_success_probability": 0.94,
         "explanation": "Simulates classic boolean-based and UNION-based SQL injection probing input parameters for database structure extraction."
     },
     {
@@ -40,6 +45,7 @@ SIMULATED_VECTORS = [
         "name": "Cross-Site Scripting (XSS) - Stored Cookie Stealer",
         "category": "XSS Simulation",
         "risk_level": "Medium",
+        "source_ip": "192.0.2.14",
         "expected_behaviour": "Injects malicious script tag into user comment section to attempt session hijacking.",
         "payload": {
             "target_endpoint": "/api/v1/comments",
@@ -47,6 +53,7 @@ SIMULATED_VECTORS = [
             "context": "User Comment Input Box"
         },
         "success_probability": 0.65,
+        "scenario_baseline_success_probability": 0.65,
         "explanation": "Simulates stored XSS vector designed to capture active JWT session cookies and transmit them to external C2 endpoints."
     },
     {
@@ -54,6 +61,7 @@ SIMULATED_VECTORS = [
         "name": "Credential Stuffing / Brute Force Attack",
         "category": "Brute Force Simulation",
         "risk_level": "High",
+        "source_ip": "45.142.120.9",
         "expected_behaviour": "High volume of rapid authentication attempts originating from distributed IP ranges.",
         "payload": {
             "attempts_per_sec": 45,
@@ -63,6 +71,7 @@ SIMULATED_VECTORS = [
             "source_ips": ["45.142.120.9", "193.142.146.210", "185.220.101.33"]
         },
         "success_probability": 0.78,
+        "scenario_baseline_success_probability": 0.78,
         "explanation": "Simulates automated login brute forcing leveraging leaked password dictionaries and proxy rotation."
     },
     {
@@ -70,6 +79,7 @@ SIMULATED_VECTORS = [
         "name": "SYN Flood Distributed Denial of Service (DDoS)",
         "category": "DDoS Traffic Simulation",
         "risk_level": "Critical",
+        "source_ip": "203.0.113.88",
         "expected_behaviour": "Saturates network gateway with half-open TCP SYN connection requests.",
         "payload": {
             "protocol": "TCP",
@@ -79,6 +89,7 @@ SIMULATED_VECTORS = [
             "spoofed_ips_count": 5000
         },
         "success_probability": 0.91,
+        "scenario_baseline_success_probability": 0.91,
         "explanation": "Simulates volumetric SYN flood attempting to exhaust server connection state tables."
     },
     {
@@ -86,6 +97,7 @@ SIMULATED_VECTORS = [
         "name": "LLM Jailbreak & Prompt Injection Attack",
         "category": "Prompt Injection Simulation",
         "risk_level": "High",
+        "source_ip": "198.51.100.77",
         "expected_behaviour": "Injects adversarial instructions into LLM context window to bypass safety guardrails.",
         "payload": {
             "prompt_technique": "DAN (Do Anything Now) System Override",
@@ -93,6 +105,7 @@ SIMULATED_VECTORS = [
             "target_system": "AI Support Assistant Bot"
         },
         "success_probability": 0.58,
+        "scenario_baseline_success_probability": 0.58,
         "explanation": "Simulates prompt injection targeting AI agent guardrails to cause unauthorized system information disclosure."
     },
     {
@@ -100,6 +113,7 @@ SIMULATED_VECTORS = [
         "name": "Remote Command Injection Payload",
         "category": "Command Injection Simulation",
         "risk_level": "Critical",
+        "source_ip": "198.51.100.99",
         "expected_behaviour": "Appends arbitrary operating system shell commands to form input parameters.",
         "payload": {
             "target_endpoint": "/api/v1/ping-utility",
@@ -107,6 +121,7 @@ SIMULATED_VECTORS = [
             "injection_character": ";"
         },
         "success_probability": 0.88,
+        "scenario_baseline_success_probability": 0.88,
         "explanation": "Simulates command injection attempting shell command execution and reverse shell outbound connection."
     },
     {
@@ -114,6 +129,7 @@ SIMULATED_VECTORS = [
         "name": "Ransomware Behavioral Encryption Activity",
         "category": "Ransomware Behaviour Simulation",
         "risk_level": "Critical",
+        "source_ip": "192.168.1.150",
         "expected_behaviour": "Rapid modification and file extension renaming across local system directories.",
         "payload": {
             "file_access_rate": "850 files/min",
@@ -121,6 +137,7 @@ SIMULATED_VECTORS = [
             "shadow_copy_deletion_command": "vssadmin.exe Delete Shadows /All /Quiet"
         },
         "success_probability": 0.95,
+        "scenario_baseline_success_probability": 0.95,
         "explanation": "Simulates ransomware behavior patterns such as deleting volume shadow copies and high-entropy file encryption."
     },
     {
@@ -128,6 +145,7 @@ SIMULATED_VECTORS = [
         "name": "Network Reconnaissance Port Scan (Nmap SYN)",
         "category": "Network Port Scan Simulation",
         "risk_level": "Low",
+        "source_ip": "198.51.100.12",
         "expected_behaviour": "Sequential TCP probe connection requests across ports 1-1024.",
         "payload": {
             "scanner": "Nmap v7.93 Stealth SYN Scan (-sS)",
@@ -136,6 +154,7 @@ SIMULATED_VECTORS = [
             "scan_speed": "T4 (Aggressive Timing)"
         },
         "success_probability": 0.99,
+        "scenario_baseline_success_probability": 0.99,
         "explanation": "Simulates automated network port scanning attempting to identify open services and OS versions."
     }
 ]
@@ -148,11 +167,12 @@ class RedTeamGenerator:
         return self.vectors
 
     def simulate_attack(self, vector_id: str) -> Dict[str, Any]:
-        match = next((v for v in self.vectors if v["id"] == vector_id), None)
+        match = next((v for v in self.vectors if v["id"].lower() == vector_id.lower() or v["name"].lower() == vector_id.lower() or vector_id.lower() in v["id"].lower()), None)
         if not match:
-            match = self.vectors[0]
+            raise ValueError(f"Unknown attack vector '{vector_id}'. Valid vectors: {[v['id'] for v in self.vectors]}")
             
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        now_dt = datetime.now(timezone.utc)
+        timestamp = now_dt.strftime("%d %b %Y • %H:%M:%S IST")
         execution_log = [
             f"[{timestamp}] [RED_TEAM_SIM] Initializing scenario {match['id']}...",
             f"[{timestamp}] [RED_TEAM_SIM] Vector category: {match['category']}.",
@@ -164,6 +184,7 @@ class RedTeamGenerator:
             "status": "SIMULATION_SUCCESS",
             "vector_details": match,
             "timestamp": timestamp,
+            "iso_timestamp": now_dt.isoformat(),
             "logs": execution_log
         }
 

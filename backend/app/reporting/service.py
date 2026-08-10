@@ -7,7 +7,7 @@ PDFRenderer → SHA256 Hashing → ReportPersistence → ReportAuditIntegration.
 import os
 import logging
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from uuid import UUID
 
 from sqlalchemy.orm import Session
@@ -88,7 +88,7 @@ class ReportService:
             recs = self.rec_engine.generate_recommendations(inc_data["attack"]["type"])
 
             # 8. Assemble canonical report document
-            generated_at_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+            generated_at_str = datetime.now(timezone.utc).strftime("%d %b %Y • %H:%M:%S IST")
             report_id_temp = f"REP-{str(incident_id)[:8].upper()}"
 
             report_data: Dict[str, Any] = {
@@ -114,9 +114,10 @@ class ReportService:
             sha256_hash = self.integrity_verifier.compute_sha256(pdf_path)
 
             # 11. Persist Report DB record
+            real_incident_uuid = UUID(inc_data['incident']['id'])
             report_title = f"Incident Report: {inc_data['incident']['title']}"
             report_row = self.persistence.save_report(
-                incident_id=incident_id,
+                incident_id=real_incident_uuid,
                 pdf_path=pdf_path,
                 sha256_hash=sha256_hash,
                 title=report_title,

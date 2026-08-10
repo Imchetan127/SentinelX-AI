@@ -10,6 +10,8 @@ from app.models.report import Report
 from app.models.audit_log import AuditLog
 from app.models.validation_result import ValidationResult
 from app.models.explanation import Explanation
+from app.models.mitigation import Mitigation
+from app.models.timeline_event import TimelineEvent
 
 __all__ = [
     "Base",
@@ -24,4 +26,6 @@ __all__ = [
     "AuditLog",
     "ValidationResult",
     "Explanation",
+    "Mitigation",
+    "TimelineEvent",
 ]

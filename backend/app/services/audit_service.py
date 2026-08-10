@@ -29,8 +29,19 @@ class AuditService:
             if resource_id:
                 full_details += f" [Resource ID: {resource_id}]"
 
+        # Ensure user_id exists in database to prevent Foreign Key violations
+        valid_user_id = None
+        if user_id:
+            try:
+                from app.models.user import User
+                existing_user = self.db.get(User, user_id)
+                if existing_user:
+                    valid_user_id = user_id
+            except Exception:
+                valid_user_id = None
+
         entry = AuditLog(
-            user_id=user_id,
+            user_id=valid_user_id,
             action=action,
             resource=resource,
             ip_address=ip_address,

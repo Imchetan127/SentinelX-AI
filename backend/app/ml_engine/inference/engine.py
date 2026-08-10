@@ -385,3 +385,57 @@ class InferenceService:
             )
             # Re-raise to let controllers return structured validation errors
             raise e
+
+    def run_model_inference(self, model_file: str, payload_data: Any) -> Dict[str, Any]:
+        """
+        Run real model inference against trained .bin / .joblib model artifacts stored in backend/models/.
+        Uses domain-matched features extracted via app.ml_engine.features.extract_features_dict.
+        """
+        from app.ml_engine.features import extract_features_dict, FEATURE_NAMES
+
+        models_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "models"))
+        model_path = os.path.join(models_dir, model_file)
+
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model binary artifact '{model_file}' missing at path: {model_path}")
+
+        model = joblib.load(model_path)
+        feat_dict = extract_features_dict(payload_data)
+        df = pd.DataFrame([feat_dict], columns=FEATURE_NAMES)
+
+        if hasattr(model, "predict_proba"):
+            probas = model.predict_proba(df)[0]
+            prob = float(probas[1]) if len(probas) > 1 else float(probas[0])
+            
+            # Security-tuned per-model operating thresholds (STEP 3)
+            model_file_lower = model_file.lower()
+            if "rf" in model_file_lower or "random" in model_file_lower:
+                model_th = 0.35
+            elif "lgb" in model_file_lower or "lightgbm" in model_file_lower:
+                model_th = 0.40
+            elif "xgb" in model_file_lower or "xgboost" in model_file_lower:
+                model_th = 0.40
+            else:
+                model_th = 0.50
+
+            label = "malicious" if prob >= model_th else "clean"
+            conf = prob if label == "malicious" else (1.0 - prob)
+        elif hasattr(model, "decision_function"):
+            score = float(model.decision_function(df)[0])
+            iso_pred = model.predict(df)[0]
+            label = "malicious" if iso_pred == -1 else "clean"
+            conf = float(min(0.99, max(0.05, 0.5 - (score * 2.5)))) if iso_pred == -1 else float(min(0.99, max(0.05, 0.5 + (score * 2.5))))
+            prob = conf if label == "malicious" else (1.0 - conf)
+        else:
+            y_pred = model.predict(df)[0]
+            label = "malicious" if y_pred == 1 else "clean"
+            conf = 0.95
+            prob = 0.95 if label == "malicious" else 0.05
+
+        return {
+            "prediction": label,
+            "confidence": round(conf, 4),
+            "probability": round(prob, 4),
+            "features": feat_dict
+        }
+

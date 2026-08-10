@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     REPORTS_DIR: str = "../reports"
 
     model_config = SettingsConfigDict(
-        env_file="../.env",
+        env_file=("../.env", "../.env.local"),
         case_sensitive=True,
         extra="ignore",
     )

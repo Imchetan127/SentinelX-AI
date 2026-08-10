@@ -41,6 +41,7 @@ def _verify_generate_rbac(current_user: dict) -> None:
         )
 
 
+@router.post("/incidents/{incident_id}")
 @router.post("/generate/{incident_id}")
 def generate_report_api(
     incident_id: UUID,
@@ -83,6 +84,7 @@ def generate_report_api(
         )
 
 
+@router.get("")
 @router.get("/")
 def list_reports_api(
     limit: int = 100,

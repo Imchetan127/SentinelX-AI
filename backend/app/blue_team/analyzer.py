@@ -16,7 +16,7 @@ class BlueTeamAnalyzer:
         threat_category = "Normal / Benign"
         risk_level = "Low"
 
-        # Check SQLi
+        # 1. SQL Injection
         sqli_hits = [p for p in self.sql_patterns if re.search(p, text, re.IGNORECASE)]
         if sqli_hits:
             threat_score += 0.85
@@ -24,7 +24,7 @@ class BlueTeamAnalyzer:
             threat_category = "SQL Injection Attack"
             risk_level = "Critical"
 
-        # Check XSS
+        # 2. XSS Injection
         xss_hits = [p for p in self.xss_patterns if re.search(p, text, re.IGNORECASE)]
         if xss_hits:
             threat_score += 0.75
@@ -32,7 +32,7 @@ class BlueTeamAnalyzer:
             threat_category = "Cross-Site Scripting (XSS)"
             risk_level = "High"
 
-        # Check Phishing/Spam
+        # 3. Phishing / Social Engineering
         phish_hits = [kw for kw in self.phish_keywords if kw in text_lower]
         if phish_hits:
             threat_score += 0.65
@@ -41,18 +41,47 @@ class BlueTeamAnalyzer:
                 threat_category = "Spam / Phishing Email"
                 risk_level = "Medium" if len(phish_hits) < 2 else "High"
 
-        # Check prompt injection
+        # 4. Port Scan / Reconnaissance
+        if "port" in text_lower or "nmap" in text_lower or "probe" in text_lower or "scan" in text_lower:
+            threat_score += 0.55
+            matched_indicators.append("Sequential TCP SYN Port Reconnaissance Probes")
+            if threat_category == "Normal / Benign":
+                threat_category = "Network Port Scan Reconnaissance"
+                risk_level = "Medium"
+
+        # 5. Brute Force / Credential Stuffing
+        if "brute" in text_lower or "attempts_per_sec" in text_lower or "dictionary" in text_lower or "sample_passwords" in text_lower:
+            threat_score += 0.82
+            matched_indicators.append("High-Frequency Authentication Brute-Force Pattern")
+            if threat_category == "Normal / Benign":
+                threat_category = "Credential Stuffing Brute Force"
+                risk_level = "High"
+
+        # 6. Command Injection
+        if "cat /etc/passwd" in text_lower or "; ping" in text_lower or "nc " in text_lower:
+            threat_score += 0.90
+            matched_indicators.append("OS Shell Command Injection Pattern")
+            threat_category = "Remote Command Injection"
+            risk_level = "Critical"
+
+        # 7. DDoS SYN Flood
+        if "syn_flood" in text_lower or "packets_per_second" in text_lower:
+            threat_score += 0.88
+            matched_indicators.append("Volumetric TCP SYN Packet Flood")
+            threat_category = "DDoS SYN Flood Attack"
+            risk_level = "Critical"
+
+        # 8. Prompt Injection
         if "ignore all previous instructions" in text_lower or "do anything now" in text_lower:
             threat_score += 0.80
             matched_indicators.append("LLM System Prompt Bypass Attempt")
             threat_category = "Prompt Injection Attack"
             risk_level = "High"
 
-        threat_score = min(1.0, max(0.05, threat_score if threat_score > 0 else random.uniform(0.02, 0.08)))
-        confidence = round(random.uniform(0.91, 0.99), 2)
+        threat_score = min(1.0, max(0.05, threat_score if threat_score > 0 else 0.05))
+        confidence = round(0.92, 2)
         
         mitigations = self._generate_mitigations(threat_category)
-
 
         threat_detected = threat_score > 0.40
         return {
@@ -66,127 +95,29 @@ class BlueTeamAnalyzer:
             "recommended_mitigations": mitigations
         }
 
-    def inspect_url(self, url: str) -> Dict[str, Any]:
-        url_lower = url.lower()
-        score = 0.05
-        indicators = []
-
-        if re.search(r"http[s]?://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", url_lower):
-            score += 0.40
-            indicators.append("Direct IP address used in host URL")
-
-        if len(url) > 50:
-            score += 0.20
-            indicators.append(f"Abnormally long URL length ({len(url)} chars)")
-
-        keywords = ["login", "verify", "secure", "bank", "account", "update", "paypal", "crypto", "free", "claim"]
-        found_kw = [kw for kw in keywords if kw in url_lower]
-        if found_kw:
-            score += 0.25
-            indicators.append(f"High-risk brand/security keywords in domain: {', '.join(found_kw)}")
-
-        if any(url_lower.endswith(tld) or tld + "/" in url_lower for tld in self.suspicious_tlds):
-            score += 0.25
-            indicators.append("Unusual top-level domain (TLD) associated with spam/phishing")
-
-        if url_lower.startswith("http://"):
-            score += 0.15
-            indicators.append("Unencrypted HTTP protocol connection")
-
-        score = min(1.0, score)
-        is_phishing = score > 0.45
-        category = "Phishing / Malicious URL" if is_phishing else "Legitimate Safe URL"
-        risk = "High" if score > 0.7 else ("Medium" if is_phishing else "Low")
-
-        return {
-            "url": url,
-            "is_phishing": is_phishing,
-            "threat_score": round(score, 2),
-            "confidence_score": 0.95,
-            "risk_level": risk,
-            "category": category,
-            "extracted_features": {
-                "has_ip_address": bool(re.search(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", url)),
-                "url_length": len(url),
-                "is_https": url_lower.startswith("https://"),
-                "suspicious_keyword_count": len(found_kw)
-            },
-            "indicators": indicators if indicators else ["Domain reputation and feature entropy appear normal."],
-            "mitigation": [
-                "Block domain on perimeter DNS firewall.",
-                "Quarantine incoming traffic referencing this host URL.",
-                "Verify domain SSL/TLS certificate registry."
-            ]
-        }
-
-    def inspect_email(self, subject: str, sender: str, body: str) -> Dict[str, Any]:
-        text_full = f"{subject} {sender} {body}".lower()
-        score = 0.05
-        indicators = []
-
-        if "free" in sender or "temp" in sender or any(tld in sender for tld in self.suspicious_tlds):
-            score += 0.30
-            indicators.append(f"Suspicious sender email domain: {sender}")
-
-        phish_hits = [kw for kw in self.phish_keywords if kw in text_full]
-        if phish_hits:
-            score += 0.40
-            indicators.append(f"Social engineering urgency triggers detected: {', '.join(phish_hits)}")
-
-        if "http://" in body or "https://" in body:
-            score += 0.20
-            indicators.append("External link present in email body content")
-
-        score = min(1.0, score)
-        is_spam = score > 0.45
-        category = "Spam / Phishing Email Attack" if is_spam else "Legitimate Corporate Email"
-        risk = "Critical" if score > 0.75 else ("Medium" if is_spam else "Low")
-
-        return {
-            "subject": subject,
-            "sender": sender,
-            "is_spam": is_spam,
-            "threat_score": round(score, 2),
-            "confidence_score": 0.96,
-            "risk_level": risk,
-            "category": category,
-            "spf_status": "FAIL" if is_spam else "PASS",
-            "dkim_status": "FAIL" if is_spam else "PASS",
-            "dmarc_status": "REJECT" if is_spam else "ALLOW",
-            "indicators": indicators if indicators else ["Email signature and content passes spam inspection."],
-            "mitigation": [
-                "Quarantine email in secure gateway sandbox.",
-                "Enforce strict SPF/DKIM validation rules on mail server.",
-                "Notify security operations team of targeted phishing campaign."
-            ]
-        }
-
-    def _generate_mitigations(self, threat_category: str) -> List[str]:
-        mapping = {
-            "SQL Injection Attack": [
+    def _generate_mitigations(self, category: str) -> List[str]:
+        if "SQL" in category:
+            return [
                 "Enforce Parameterized Prepared Queries (ORM) across database drivers.",
                 "Deploy Web Application Firewall (WAF) rule to block OR/UNION payloads.",
                 "Apply Principle of Least Privilege to database user permissions."
-            ],
-            "Cross-Site Scripting (XSS)": [
-                "Implement strict Content Security Policy (CSP) headers.",
-                "Sanitize and encode all user inputs prior to DOM rendering.",
-                "Set HttpOnly and SameSite flags on session cookies."
-            ],
-            "Spam / Phishing Email": [
-                "Enable SPF, DKIM, and DMARC enforcement on email gateways.",
-                "Isolate and quarantine suspicious external URL links.",
-                "Trigger automated security awareness user warning banner."
-            ],
-            "Prompt Injection Attack": [
-                "Implement dual-LLM verification guardrails.",
-                "Sanitize untrusted user prompt context strings.",
-                "Restrict executive tool access for non-authenticated sessions."
             ]
-        }
-        return mapping.get(threat_category, [
-            "Maintain continuous network telemetry monitoring.",
-            "Ensure system security patches and definitions remain up to date."
-        ])
+        if "Port Scan" in category:
+            return [
+                "Rate limit TCP SYN handshakes per source IP on perimeter router.",
+                "Enable automatic IP drop rule on threat intelligence threshold.",
+                "Block ICMP/SYN discovery probes on non-public interfaces."
+            ]
+        if "Brute Force" in category:
+            return [
+                "Enforce multi-factor authentication (MFA) on all access portals.",
+                "Implement IP-based login rate limiting (max 5 failed attempts per min).",
+                "Lock targeted accounts temporarily upon anomaly threshold breach."
+            ]
+        return [
+            "Enable strict input validation and payload sanitization.",
+            "Deploy Web Application Firewall (WAF) blocking policy.",
+            "Log event to SIEM for security analyst review."
+        ]
 
 blue_team_analyzer = BlueTeamAnalyzer()

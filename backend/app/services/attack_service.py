@@ -38,8 +38,18 @@ class AttackService:
             else:
                 stat_enum = AttackStatus.PENDING
 
+        valid_user_id = None
+        if user_id:
+            try:
+                from app.models.user import User
+                existing_user = self.db.get(User, user_id)
+                if existing_user:
+                    valid_user_id = user_id
+            except Exception:
+                valid_user_id = None
+
         attack = Attack(
-            created_by=user_id,
+            created_by=valid_user_id,
             type=attack_type,
             payload=payload,
             target=target,

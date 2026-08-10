@@ -247,9 +247,18 @@ class AnalysisService:
         if threat_detected and sev_enum in [Severity.HIGH, Severity.CRITICAL]:
             existing = self.db.scalars(select(Incident).where(Incident.attack_id == attack.id)).first()
             if not existing:
+                valid_assigned_user = None
+                if user_id:
+                    try:
+                        from app.models.user import User
+                        if self.db.get(User, user_id):
+                            valid_assigned_user = user_id
+                    except Exception:
+                        valid_assigned_user = None
+
                 incident = Incident(
                     attack_id=attack.id,
-                    assigned_to=user_id,
+                    assigned_to=valid_assigned_user,
                     title=f"Automated Threat Incident: {detection.attack_type}",
                     description=f"Automated security incident raised for threat type '{detection.attack_type}' with severity {detection.severity.value}.\nMitigation recommendations:\n{detection.recommendation}",
                     priority=sev_enum,

@@ -43,9 +43,19 @@ class IncidentService:
         except KeyError:
             status_enum = IncidentStatus.OPEN
 
+        valid_user_id = None
+        if assigned_user_id:
+            try:
+                from app.models.user import User
+                existing_user = self.db.get(User, assigned_user_id)
+                if existing_user:
+                    valid_user_id = assigned_user_id
+            except Exception:
+                valid_user_id = None
+
         incident = Incident(
             attack_id=attack_id,
-            assigned_to=assigned_user_id,
+            assigned_to=valid_user_id,
             title=title,
             description=description,
             priority=priority_enum,

@@ -63,7 +63,7 @@ class NumberedCanvas(canvas.Canvas):
             self.line(54, 11 * inch - 42, 8.5 * inch - 54, 11 * inch - 42)
 
             # Running Footer
-            now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+            now_str = datetime.now(timezone.utc).strftime("%d %b %Y • %H:%M:%S IST")
             self.drawString(54, 36, f"CONFIDENTIAL — SentinelX AI Platform | {now_str}")
             page_text = f"Page {self._pageNumber} of {page_count}"
             self.drawRightString(8.5 * inch - 54, 36, page_text)

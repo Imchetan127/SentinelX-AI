@@ -24,6 +24,8 @@ class Attack(Base):
     creator = relationship("User", back_populates="attacks")
     detections = relationship("Detection", back_populates="attack", cascade="all, delete-orphan")
     incident = relationship("Incident", uselist=False, back_populates="attack")
+    mitigations = relationship("Mitigation", back_populates="attack", cascade="all, delete-orphan")
+    timeline_events = relationship("TimelineEvent", back_populates="attack", cascade="all, delete-orphan")
 
     @property
     def attack_type(self) -> str:
